@@ -7,13 +7,14 @@
 #include <fstream>
 
 using namespace std;
-
+//Clase que representa una consola interactiva con comandos especificos
 class ConsolaInteractiva {
 private:
-    unordered_map<string, function<void(const vector<string>&)>> comandos;
-    string imagen_cargada;
-    int ancho,alto;
+    unordered_map<string, function<void(const vector<string>&)>> comandos;//Mapa para comandos disponibles
+    string imagen_cargada;//Nombre de la imagen que va a ser cargada
+    int ancho,alto;//Dimensiones de la imagen
 public:
+    // Constructor que inicializa los comandos disponibles en la consola
     ConsolaInteractiva() {
         comandos["ayuda"] = [this](const  vector<string>& args) { this->ayuda(args); };
         comandos["salir"] = [this](const vector<string>& args) { this->salir(args);};
@@ -27,11 +28,11 @@ public:
         comandos["codificar_imagen"] = [this](const vector<string>& args) { this->codificar_imagen(args); };
         comandos["segmentar"] = [this](const vector<string>& args) { this->segmentar(args); };
     }
-
+    // Método principal que ejecuta el bucle de la consola
     void ejecutar() {
         string entrada;
         while (true) {
-            cout << "$ ";
+            cout << "$ ";// Muestra el prompt de la consola
             if (!getline(cin, entrada)) {
                 cout << "\nSaliendo...\n";
                 break;
@@ -41,6 +42,7 @@ public:
     }
 
 private:
+    // Método que procesa la entrada del usuario y ejecuta el comando correspondiente
     void procesar_comando(const string& entrada) {
         istringstream stream(entrada);
         vector<string> tokens;
@@ -50,19 +52,19 @@ private:
             tokens.push_back(token);
         }
 
-        if (tokens.empty()) return;
+        if (tokens.empty()) return; // Si no hay tokens, no hacer nada
 
         string comando = tokens[0];
-        tokens.erase(tokens.begin());
+        tokens.erase(tokens.begin());// Separa el comando de los argumentos
 
         auto it = comandos.find(comando);
         if (it != comandos.end()) {
-            it->second(tokens);
+            it->second(tokens);// Ejecuta la función asociada al comando
         } else {
             cout << "Error: '" << comando << "' no es un comando reconocido. Usa 'ayuda' para ver los comandos disponibles.\n";
         }
     }
-
+    // Método que muestra la lista de comandos disponibles o información detallada de un comando
     void ayuda(const vector<string>& args) {
         if (args.empty()) {
             cout << "Comandos disponibles:\n";
@@ -80,10 +82,12 @@ private:
             }
         }
     }
+    // Método que termina la ejecución del programa
       void salir(const vector<string>&) {
             cout << "Saliendo del sistema...\n";
             exit(0);
           }
+    // Método para cargar una imagen PGM en memoria
       void cargar_imagen(const vector<string>& args) {
            if (args.size() != 1) {
             cout << "Error: Uso incorrecto. Sintaxis: cargar_imagen nombre_imagen.pgm\n";
@@ -101,6 +105,7 @@ private:
         cout << "La imagen " << nombre_imagen << " ha sido cargada.\n";
         
     }
+    // Método que muestra información de la imagen cargada
     void info_imagen(const vector<string>&) {
         if (imagen_cargada.empty()) {
             cout << "Error: No hay una imagen cargada en memoria.\n";
@@ -108,7 +113,7 @@ private:
             cout << "Imagen cargada en memoria: " << imagen_cargada << ", ancho: " << ancho << ", alto: " << alto << ".\n";
         }
     }
-
+        // Método auxiliar para leer las dimensiones de una imagen PGM
      bool leer_dimensiones_pgm(const string& nombre_archivo, int &ancho, int &alto) {
         ifstream archivo(nombre_archivo);
         if (!archivo) return false;
@@ -120,6 +125,7 @@ private:
         archivo >> ancho >> alto;
         return true;
     }
+    // Método que genera una proyección 2D de la imagen cargada
       void proyeccion2D(const vector<string>& args) {
               if (args.size() != 3) {
                   cout << "Error: Uso incorrecto. Sintaxis: proyeccion2D direccion criterio nombre_archivo.pgm\n";
@@ -133,6 +139,7 @@ private:
       
              
           }
+    // Método que decodifica un archivo en formato .huf
     void decodificar_archivo(const vector<string>& args) {
         if (args.size() != 2) {
             cout << "Error: Uso incorrecto. Sintaxis: decodificar_archivo nombre_archivo.huf nombre_imagen.pgm\n";
@@ -148,7 +155,7 @@ private:
             cout << "Error: El archivo " << archivo_entrada << " no ha podido ser decodificado.\n";
             return;
         }
-\
+       // Métodos de carga, procesamiento y manipulación de imágenes y volúmenes
         }void cargar_volumen(const vector<string>& args) {
             cout << "(Cargando volumen en memoria)\n";
         }
@@ -164,11 +171,12 @@ private:
         void segmentar(const vector<string>& args) {
             cout << "(Segmentando imagen en base a semillas y grafos)\n";
         }
+        // Método para limpiar la consola
         void clr(const vector <string>&) {
             system("clear");
         }
 
-
+    // Método que devuelve la descripción de cada comando
     string descripcion_comando(const string& comando, bool detallado = false) {
         if (comando == "ayuda") {
             return detallado ? "Uso: ayuda [comando]\nMuestra los comandos disponibles o información detallada de un comando específico." : "Muestra la lista de comandos disponibles o información de un comando específico.";
