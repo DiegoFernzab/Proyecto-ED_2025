@@ -12,14 +12,14 @@
 
 using namespace std;
 namespace fs = std::filesystem;
-
+//Estructura para representar una imagen
 struct Imagen {
 	string nombre;
 	int ancho;
 	int alto;
 	vector<vector<int>> datos;
 };
-
+//Estructura para representar varias imagenes, representar las imagenes 3D
 struct Volumen {
 	string nombre_base;
 	int num_imagenes;
@@ -29,7 +29,7 @@ struct Volumen {
 	bool cargado = false;
 };
 
-
+//Clase para que arranque la consola
 class ConsolaInteractiva {
 private:
 	unordered_map<string, function<void(const vector<string>&)>> comandos;
@@ -38,6 +38,7 @@ private:
 
 public:
 	ConsolaInteractiva() {
+		//Comandos definidos para utilizarse en temrinal por ello el uso del args
 		comandos["ayuda"] = [this](const  vector<string>& args) {
 			this->ayuda(args);
 		};
@@ -72,7 +73,7 @@ public:
 			this->segmentar(args);
 		};
 	}
-
+	//Metodo que da pie a iniciar el programa 
 	void ejecutar() {
 		string entrada;
 		while (true) {
@@ -86,6 +87,7 @@ public:
 	}
 
 private:
+	//Ejecuta los comandos verificando a traves de lo que se le escriba por la terminal
 	void procesar_comando(const string& entrada) {
 		istringstream stream(entrada);
 		vector<string> tokens;
@@ -107,7 +109,7 @@ private:
 			cout << "Error: '" << comando << "' no es un comando reconocido. Usa 'ayuda' para ver los comandos disponibles.\n";
 		}
 	}
-
+	//Muestra ayuda para los comandos
 	void ayuda(const vector<string>& args) {
 		if (args.empty()) {
 			cout << "Comandos disponibles:\n";
