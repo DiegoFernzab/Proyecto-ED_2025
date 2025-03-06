@@ -33,8 +33,8 @@ struct Volumen {
 class ConsolaInteractiva {
 private:
 	unordered_map<string, function<void(const vector<string>&)>> comandos;
-	Imagen imagen_actual;
-	Volumen volumen_actual;
+	Imagen imagen_actual;//Instancia de imagen
+	Volumen volumen_actual;//Instancia de volumen donde van a ver varias imagenes
 
 public:
 	ConsolaInteractiva() {
@@ -131,6 +131,7 @@ private:
 		cout << "Saliendo del sistema...\n";
 		exit(0);
 	}
+	//cargar imagenes pgm teniendo en cuenta la logica de leer imagenes pgm
 	void cargar_imagen(const vector<string>& args) {
 		if (args.size() != 1) {
 			cout << "Error: Uso incorrecto. Sintaxis: cargar_imagen nombre_imagen.pgm\n";
@@ -149,6 +150,7 @@ private:
 		imagen_actual = {nombre_imagen, w, h, datos};  //  Se almacena en `imagen_actual`
 		cout << "La imagen " << nombre_imagen << " ha sido cargada.\n";
 	}
+	//Muestra informacion de una imagen la cual ha sido almacenada anteriormente
 	void info_imagen(const vector<string>&) {
 		if (imagen_actual.nombre.empty()) {
 			cout << "Error: No hay una imagen cargada en memoria.\n";
@@ -158,30 +160,30 @@ private:
 			     << ", alto: " << imagen_actual.alto << ".\n";
 		}
 	}
-
+	//Lee archivos de tipo pgm teniendo en cuenta como es el inicio de un archivo de estos en un editor de texto
 	bool leer_pgm(const string& nombre_archivo, vector<vector<int>>& img, int& w, int& h) {
 		ifstream archivo(nombre_archivo);
 		if (!archivo) return false;
 
 		string tipo;
-		archivo >> tipo;
+		archivo >> tipo;// Lee el encabezado (debe ser "P2")
 		if (tipo != "P2") return false;
 
-		archivo >> w >> h;
+		archivo >> w >> h; // Lee dimensiones de la imagen
 		int max_val;
-		archivo >> max_val;
+		archivo >> max_val;// Lee el valor máximo de gris (normalmente 255)
 
-		img.assign(h, vector<int>(w));
+		img.assign(h, vector<int>(w));// Asigna espacio en la matriz de píxeles
 		for (int i = 0; i < h; i++) {
 			for (int j = 0; j < w; j++) {
-				archivo >> img[i][j];
+				archivo >> img[i][j];// Carga cada píxel en la matriz
 			}
 		}
 
 		return true;
 	}
 
-
+	// Función para proyectar una vista 2D desde un volumen 3D en una dirección específica
 	void proyeccion2D(const vector<string>& args) {
     if (!volumen_actual.cargado) {
         cout << "Error: El volumen aún no ha sido cargado en memoria.\n";
@@ -199,7 +201,7 @@ private:
 
     int w = volumen_actual.ancho;
     int h = volumen_actual.alto;
-    int d = volumen_actual.num_imagenes;
+    int d = volumen_actual.num_imagenes;// Número de imágenes en el volumen
     
     vector<vector<int>> proyeccion;
 
@@ -273,7 +275,7 @@ int aplicar_criterio(vector<int>& valores, const string& criterio) {
         return 0;
     }
 }
-
+// Función para guardar una imagen en formato PGM
 bool guardar_pgm(const string& nombre_archivo, const vector<vector<int>>& imagen) {
     ofstream archivo(nombre_archivo);
     if (!archivo) return false;
@@ -281,13 +283,13 @@ bool guardar_pgm(const string& nombre_archivo, const vector<vector<int>>& imagen
     int w = imagen[0].size();
     int h = imagen.size();
 
-    archivo << "P2\n";
+    archivo << "P2\n";//Escribe el encabezado del archivo PGM
     archivo << w << " " << h << "\n";
-    archivo << "255\n";
+    archivo << "255\n";// Escribe el valor máximo de gris
 
     for (const auto& fila : imagen) {
         for (int pixel : fila) {
-            archivo << pixel << " ";
+            archivo << pixel << " ";// Escribe cada píxel
         }
         archivo << "\n";
     }
@@ -314,6 +316,7 @@ bool guardar_pgm(const string& nombre_archivo, const vector<vector<int>>& imagen
 		}
 
 	}
+	// Función para cargar un volumen de imágenes PGM desde una lista de archivos
 	void cargar_volumen(const vector<string>& args) {
         if (args.size() != 2) {
             cout << "Error: Uso incorrecto. Sintaxis: cargar_volumen <nombre_base> <n_im>\n";
@@ -321,7 +324,7 @@ bool guardar_pgm(const string& nombre_archivo, const vector<vector<int>>& imagen
         }
 
         string nombre_base = args[0];
-        string carpeta_base = nombre_base + "-ppm";
+        string carpeta_base = nombre_base + "-ppm";//Define en que debe acabar la carpeta
         string carpeta_alternativa = nombre_base + "_ppm";
 
         if (!fs::exists(carpeta_base) && !fs::exists(carpeta_alternativa)) {
@@ -334,7 +337,7 @@ bool guardar_pgm(const string& nombre_archivo, const vector<vector<int>>& imagen
         int n_im;
         try {
             n_im = stoi(args[1]);
-            if (n_im < 1 || n_im > 99) {
+            if (n_im < 1 || n_im > 99) {//numero de imagenes dentro de la carpeta
                 cout << "Error: n_im debe estar entre 1 y 99.\n";
                 return;
             }
@@ -349,7 +352,7 @@ bool guardar_pgm(const string& nombre_archivo, const vector<vector<int>>& imagen
             if ((filename.find(nombre_base) == 0) && (filename.size() > nombre_base.size() + 2)) {  
                 if (filename.substr(filename.size() - 4) == ".ppm") {  
                     archivos_encontrados.push_back(entry.path().string());
-                }
+                }//encuentra el nombre base para los archivos basandose que sean ppm
             }
         }
 
@@ -364,7 +367,7 @@ bool guardar_pgm(const string& nombre_archivo, const vector<vector<int>>& imagen
 
         volumen_actual.nombre_base = nombre_base;
         volumen_actual.num_imagenes = n_im;
-        volumen_actual.imagenes.clear();
+        volumen_actual.imagenes.clear();// Limpia el volumen actual
         volumen_actual.cargado = true;
 
         cout << "Cargando volumen desde carpeta: " << carpeta << " con " << n_im << " imágenes...\n";
@@ -377,16 +380,16 @@ bool guardar_pgm(const string& nombre_archivo, const vector<vector<int>>& imagen
                 suma_ancho += nueva_imagen.ancho;
                 suma_alto += nueva_imagen.alto;
                 cout << "  Cargando " << img << " (Ancho: " << nueva_imagen.ancho << ", Alto: " << nueva_imagen.alto << ")...\n";
-            }
+            }//se guardan los valores de las imagenes para posteriormente realizar un promedio entre las que se van cargando
         }
 
-        volumen_actual.ancho = suma_ancho / n_im;
-        volumen_actual.alto = suma_alto / n_im;
+        volumen_actual.ancho = suma_ancho / n_im;//promedio de las imagenes para ancho
+        volumen_actual.alto = suma_alto / n_im;//promedio de las imagenes para alto
 
         cout << "✅ Volumen cargado correctamente desde '" << carpeta << "'.\n";
     }
 
-
+	//Muestra informacion del volumen que cargamos anteriormente
 	void info_volumen(const vector<string>& args) {
 		if (!volumen_actual.cargado) {
 			cout << "No hay un volumen cargado en memoria." << endl;
@@ -398,7 +401,7 @@ bool guardar_pgm(const string& nombre_archivo, const vector<vector<int>>& imagen
 		     << ", ancho: " << volumen_actual.ancho
 		     << ", alto: " << volumen_actual.alto << "." << endl;
 	}
-
+	//lee imagenes ppm con la misma logica que un pgm con sus diferencias respectivas
 	bool leer_ppm(const string& nombre_archivo, Imagen& img) {
 		ifstream archivo(nombre_archivo);
 		if (!archivo) {
@@ -408,7 +411,7 @@ bool guardar_pgm(const string& nombre_archivo, const vector<vector<int>>& imagen
 
 		string tipo;
 		archivo >> tipo;
-		if (tipo != "P3") {
+		if (tipo != "P3") {//encabezado de archivos ppm
 			cout << "Error: Formato incorrecto en " << nombre_archivo << " (Se esperaba P3)\n";
 			return false;
 		}
