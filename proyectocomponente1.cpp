@@ -28,6 +28,16 @@ struct Volumen {
 	vector<Imagen> imagenes;
 	bool cargado = false;
 };
+// Estructura para representar un nodo en el árbol de Huffman
+struct NodoHuffman {
+    int valor;  // Valor del píxel
+    int frecuencia;
+    NodoHuffman* izquierda;
+    NodoHuffman* derecha;
+
+    NodoHuffman(int val, int freq) : valor(val), frecuencia(freq), izquierda(nullptr), derecha(nullptr) {}
+};
+
 
 //Clase para que arranque la consola
 class ConsolaInteractiva {
@@ -438,7 +448,113 @@ bool guardar_pgm(const string& nombre_archivo, const vector<vector<int>>& imagen
 
 
 	void codificar_imagen(const vector<string>& args) {
-		cout << "(Codificando imagen en formato .huf)\n";
+	
+	if (args.size() != 1) {
+        cout << "Error: Uso incorrecto. Sintaxis: codificar_imagen nombre_archivo.huf\n";
+        return;
+    }
+
+    if (imagen_actual.nombre.empty()) {
+        cout << "Error: No hay una imagen cargada en memoria.\n";
+        return;
+    }
+
+    string nombre_archivo = args[0];
+    
+    // 1. Calcular frecuencias de los píxeles
+    unordered_map<int, int> frecuencias;
+    for (const auto& fila : imagen_actual.datos) {
+        for (int pixel : fila) {
+            frecuencias[pixel]++;
+        }
+    }
+
+    // 2. Construir el árbol de Huffman
+    auto comparador = [](NodoHuffman* a, NodoHuffman* b) {
+        return a->frecuencia > b->frecuencia;
+    };
+    priority_queue<NodoHuffman*, vector<NodoHuffman*>, decltype(comparador)> cola_prioridad(comparador);
+
+    for (const auto& par : frecuencias) {
+        cola_prioridad.push(new NodoHuffman(par.first, par.second));
+    }
+
+    while (cola_prioridad.size() > 1) {
+        NodoHuffman* izquierda = cola_prioridad.top();
+        cola_prioridad.pop();
+        NodoHuffman* derecha = cola_prioridad.top();
+        cola_prioridad.pop();
+
+        NodoHuffman* nodo_padre = new NodoHuffman(-1, izquierda->frecuencia + derecha->frecuencia);
+        nodo_padre->izquierda = izquierda;
+        nodo_padre->derecha = derecha;
+        cola_prioridad.push(nodo_padre);
+    }
+
+    NodoHuffman* raiz = cola_prioridad.top();
+
+    // 3. Generar códigos Huffman
+    unordered_map<int, string> codigos_huffman;
+    function<void(NodoHuffman*, string)> generar_codigos = [&](NodoHuffman* nodo, string codigo) {
+        if (!nodo) return;
+        
+        if (nodo->valor != -1) {
+            codigos_huffman[nodo->valor] = codigo;
+            return;
+        }
+        
+        generar_codigos(nodo->izquierda, codigo + "0");
+        generar_codigos(nodo->derecha, codigo + "1");
+    };
+    generar_codigos(raiz, "");
+
+    // 4. Escribir el archivo .huf
+    ofstream archivo_salida(nombre_archivo, ios::binary);
+    if (!archivo_salida) {
+        cout << "Error: No se pudo crear el archivo " << nombre_archivo << "\n";
+        return;
+    }
+
+    // Escribir cabecera con información de la imagen
+    archivo_salida << "HUFFMAN" << endl;
+    archivo_salida << imagen_actual.ancho << " " << imagen_actual.alto << endl;
+
+    // Escribir tabla de frecuencias
+    archivo_salida << frecuencias.size() << endl;
+    for (const auto& par : frecuencias) {
+        archivo_salida << par.first << " " << par.second << endl;
+    }
+
+    // Escribir datos codificados
+    string bits;
+    for (const auto& fila : imagen_actual.datos) {
+        for (int pixel : fila) {
+            bits += codigos_huffman[pixel];
+        }
+    }
+
+    // Convertir bits a bytes
+    while (bits.size() % 8 != 0) {
+        bits += "0"; // Padding
+    }
+
+    for (size_t i = 0; i < bits.size(); i += 8) {
+        string byte_str = bits.substr(i, 8);
+        char byte = static_cast<char>(stoi(byte_str, nullptr, 2));
+        archivo_salida.write(&byte, 1);
+    }
+
+    // Limpiar memoria del árbol
+    function<void(NodoHuffman*)> limpiar_arbol = [&](NodoHuffman* nodo) {
+        if (!nodo) return;
+        limpiar_arbol(nodo->izquierda);
+        limpiar_arbol(nodo->derecha);
+        delete nodo;
+    };
+    limpiar_arbol(raiz);
+
+    cout << "La imagen en memoria ha sido codificada exitosamente y almacenada en el archivo " 
+         << nombre_archivo << ".\n";
 	}
 
 	void segmentar(const vector<string>& args) {
