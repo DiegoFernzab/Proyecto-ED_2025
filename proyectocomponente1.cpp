@@ -160,28 +160,58 @@ private:
 			     << ", alto: " << imagen_actual.alto << ".\n";
 		}
 	}
-	//Lee archivos de tipo pgm teniendo en cuenta como es el inicio de un archivo de estos en un editor de texto
-	bool leer_pgm(const string& nombre_archivo, vector<vector<int>>& img, int& w, int& h) {
-		ifstream archivo(nombre_archivo);
-		if (!archivo) return false;
+	
 
-		string tipo;
-		archivo >> tipo;// Lee el encabezado (debe ser "P2")
-		if (tipo != "P2") return false;
 
-		archivo >> w >> h; // Lee dimensiones de la imagen
-		int max_val;
-		archivo >> max_val;// Lee el valor máximo de gris (normalmente 255)
+bool leer_pgm(const string& nombre_archivo, Imagen& img) {
+    try {
+        FileHandler fh(nombre_archivo);
+        
+        // Validación de cabecera
+        string tipo;
+        if (!(fh >> tipo) || tipo != "P2") {
+            throw format_error("Formato de archivo no soportado");
+        }
 
-		img.assign(h, vector<int>(w));// Asigna espacio en la matriz de píxeles
-		for (int i = 0; i < h; i++) {
-			for (int j = 0; j < w; j++) {
-				archivo >> img[i][j];// Carga cada píxel en la matriz
-			}
-		}
+        // Validación de dimensiones
+        int ancho, alto, max_val;
+        if (!(fh >> ancho >> alto >> max_val)) {
+            throw format_error("Cabecera corrupta");
+        }
 
-		return true;
-	}
+        if (ancho <= 0 || alto <= 0 || max_val <= 0) {
+            throw format_error("Dimensiones inválidas");
+        }
+
+        img.datos = ImageData(ancho, alto);
+        
+        // Validación de valores de píxel
+        for (int i = 0; i < alto; ++i) {
+            for (int j = 0; j < ancho; ++j) {
+                int pixel;
+                if (!(fh >> pixel)) {
+                    throw format_error("Datos de imagen incompletos");
+                }
+                if (pixel < 0 || pixel > max_val) {
+                    throw format_error("Valor de píxel fuera de rango");
+                }
+                img.datos.at(i, j) = pixel;
+            }
+        }
+
+        // Verificar EOF (opcional)
+        int dummy;
+        if (fh >> dummy) {
+            throw format_error("Datos adicionales no esperados");
+        }
+
+        return true;
+    } catch (const std::exception& e) {
+        cerr << "Error al leer " << nombre_archivo << ": " << e.what() << endl;
+        img.datos.reset(); // Limpiar en caso de error
+        return false;
+    }
+}
 
 	// Función para proyectar una vista 2D desde un volumen 3D en una dirección específica
 	void proyeccion2D(const vector<string>& args) {
