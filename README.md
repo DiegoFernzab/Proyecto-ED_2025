@@ -11,6 +11,6 @@ Entrega0:https://github.com/DiegoFernzab/Proyecto-ED_2025/tree/entrega%230
 
 Entrega1:https://github.com/DiegoFernzab/Proyecto-ED_2025/tree/Entrega-%231
 
-Entrega2:En construccion
+Entrega2:https://github.com/Khamarhack/Entrega2EDD.git
 
 Entrega3:En construccion
