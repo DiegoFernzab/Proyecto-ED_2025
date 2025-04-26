@@ -26,14 +26,6 @@ La interacción con el sistema se realiza mediante una **consola interactiva de 
 
 ---
 
-## ⚙️ Estructura del Proyecto
-
-Entrega2EDD/ ├── src/ # Código fuente principal (archivos .cpp/.h) ├── tests/ # Casos de prueba unitarios y de integración ├── docs/ # Documentación en PDF (Diseño y Plan de Pruebas) ├── assets/ # Imágenes de prueba y resultados (.pgm/.huf) ├── README.md # Este archivo ├── .gitignore # Archivos a ignorar por Git └── Makefile # (opcional) automatiza la compilación
-
-
-
----
-
 ## 🧠 Componentes Implementados
 
 ### 🧩 Componente 1: Proyección de Imágenes
