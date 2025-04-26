@@ -1,0 +1,22 @@
+instrucciones para funcionamiento
+g++ proyectocomponente1.cpp -o proyectocomponente1
+./ proyectocomponente1
+-ayuda para validar comandos disponibles
+-cargar volumen de imágenes
+cargar_volumen IM-126-0002-epiT2 36
+-información acerca del volumen de imágenes cargado 
+info_volumen
+generar una proyección en x y & z con promedio
+proyeccion2D x promedio proyeccion-prom-x.pgm
+proyeccion2D y promedio proyeccion-prom-y.pgm
+proyeccion2D z promedio proyeccion-prom-z.pgm
+
+generar una proyección en x y & z con mínimo
+proyeccion2D x minimo proyeccionmin.pgm
+proyeccion2D y minimo proyeccionmin.pgm
+proyeccion2D z minimo proyeccionmin.pgm
+
+generar una proyección en x y & z con maximo
+proyeccion2D x minimo proyeccionmax.pgm
+proyeccion2D y minimo proyeccionmax.pgm
+proyeccion2D z minimo proyeccionmax.pgm
