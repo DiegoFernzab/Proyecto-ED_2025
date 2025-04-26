@@ -27,12 +27,10 @@ Este trabajo se desarrolla como parte del curso de Estructuras de Datos de la Po
 🗂️ Organización del Repositorio
 Cada entrega está organizada en una rama independiente:
 Entrega | Descripción | Enlace
-Entrega 0 | Interfaz de usuario básica | Ver Entrega 0
-https://github.com/DiegoFernzab/Proyecto-ED_2025/tree/entrega%230
-Entrega 1 | Funcionalidad completa del Componente 1 | Ver Entrega 1
-https://github.com/DiegoFernzab/Proyecto-ED_2025/tree/Entrega-%231
-Entrega 2 | Funcionalidad completa de Componentes 1 y 2 | Ver Entrega 2
 
+Entrega 0 | Interfaz de usuario básica | https://github.com/DiegoFernzab/Proyecto-ED_2025/tree/entrega%230
+Entrega 1 | Funcionalidad completa del Componente 1 | https://github.com/DiegoFernzab/Proyecto-ED_2025/tree/Entrega-%231
+Entrega 2 | Funcionalidad completa de Componentes 1 y 2 | https://github.com/DiegoFernzab/Proyecto-ED_2025/tree/28aa5eac9ee5061a5fd408044c391bd946b42d64/Entrega2EDD-main/EDD
 Entrega 3 | En construcción | 🚧
 
 
