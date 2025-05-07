@@ -32,8 +32,8 @@ Entrega 0 | Interfaz de usuario básica | https://github.com/DiegoFernzab/Proyec
 
 Entrega 1 | Funcionalidad completa del Componente 1 | https://github.com/DiegoFernzab/Proyecto-ED_2025.git
 
-Entrega 2 | Funcionalidad completa de Componentes 1 y 2 | https://github.com/DiegoFernzab/Proyecto-ED_2025/tree/c5123b91b7a409ee0bc11d25bd3be0b798dda099/Entrega2EDD-main/EDD
-
+Entrega 2 | Funcionalidad completa de Componentes 1 y 2 | 
+-> https://github.com/DiegoFernzab/Proyecto-ED_2025/tree/c5123b91b7a409ee0bc11d25bd3be0b798dda099/Entrega2EDD-main/EDD
 
 Entrega 3 | En construcción | 🚧
 
