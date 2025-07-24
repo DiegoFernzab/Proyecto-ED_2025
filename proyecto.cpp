@@ -90,7 +90,7 @@ private:
     // Método para cargar una imagen PGM en memoria
       void cargar(const vector<string>& args) {
            if (args.size() != 1) {
-            cout << "Error: Uso incorrecto. Sintaxis: cargar_imagen nombre_imagen.pgm\n";
+            cout << "Error: Uso incorrecto. Sintaxis: cargar nombre_archivo.fa\n";
             return;
         }
 
