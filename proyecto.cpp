@@ -18,7 +18,7 @@ public:
     ConsolaInteractiva() {
         comandos["ayuda"] = [this](const  vector<string>& args) { this->ayuda(args); };
         comandos["salir"] = [this](const vector<string>& args) { this->salir(args);};
-        comandos["cargar_imagen"] = [this](const vector<string>& args) { this->cargar_imagen(args);};
+        comandos["cargar"] = [this](const vector<string>& args) { this->cargar(args);};
         comandos["clr"] = [this](const vector<string>& args) { this->clr(args);};
         comandos["info_imagen"] = [this](const vector<string>& args) { this->info_imagen(args);};
         comandos["proyeccion2D"] = [this](const vector<string>& args) { this->proyeccion2D(args);};
@@ -88,7 +88,7 @@ private:
             exit(0);
           }
     // Método para cargar una imagen PGM en memoria
-      void cargar_imagen(const vector<string>& args) {
+      void cargar(const vector<string>& args) {
            if (args.size() != 1) {
             cout << "Error: Uso incorrecto. Sintaxis: cargar_imagen nombre_imagen.pgm\n";
             return;
@@ -184,7 +184,7 @@ private:
       if (comando == "salir") {
             return detallado ? "Uso: salir\nCierra la consola interactiva y termina la ejecución del programa." : "Finaliza la ejecución del programa.";
       }
-      if (comando == "cargar_imagen") {
+      if (comando == "cargar") {
             return detallado ? "Uso: cargar_imagen nombre_imagen.pgm\nCarga una imagen en memoria. Si ya hay una imagen cargada, será reemplazada." : "Carga en memoria una imagen PGM.";
       }
       if (comando == "clr") {
