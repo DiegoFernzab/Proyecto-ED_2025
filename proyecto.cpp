@@ -32,7 +32,7 @@ public:
     void ejecutar() {
         string entrada;
         while (true) {
-            cout << "$ ";// Muestra el prompt de la consola
+            cout << "Bienvenidos al proyecto de codigos geneticos.\n$ ";// Muestra el prompt de la consola
             if (!getline(cin, entrada)) {
                 cout << "\nSaliendo...\n";
                 break;
