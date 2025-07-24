@@ -89,22 +89,54 @@ private:
           }
     // Método para cargar una imagen PGM en memoria
       void cargar(const vector<string>& args) {
-           if (args.size() != 1) {
-            cout << "Error: Uso incorrecto. Sintaxis: cargar nombre_archivo.fa\n";
-            return;
-        }
-
-        string nombre_imagen = args[0];
-
-        if (!leer_dimensiones_pgm(nombre_imagen, ancho, alto)) {
-            cout << "Error: La imagen " << nombre_imagen << " no ha podido ser cargada.\n";
-            return;
-        }
-
-        imagen_cargada = nombre_imagen;
-        cout << "La imagen " << nombre_imagen << " ha sido cargada.\n";
-        
+    if (args.size() != 1) {
+        cout << "Error: Uso incorrecto. Sintaxis: cargar nombre_archivo.fa\n";
+        return;
     }
+
+    string nombre_archivo = args[0];
+    ifstream archivo(nombre_archivo);
+    
+    // Verificar si el archivo puede abrirse
+    if (!archivo) {
+        cout << nombre_archivo << " no se encuentra o no puede leerse.\n";
+        return;
+    }
+    
+    // Variables para contar secuencias
+    int contador_secuencias = 0;
+    string linea;
+    bool en_secuencia = false;
+    
+    // Limpiar cualquier dato previamente cargado
+    // [Aquí deberías limpiar tus estructuras de datos donde almacenas las secuencias]
+    
+    // Leer el archivo línea por línea
+    while (getline(archivo, linea)) {
+        // Si es una línea de cabecera (empieza con '>')
+        if (linea[0] == '>') {
+            contador_secuencias++;
+            en_secuencia = true;
+        } else if (en_secuencia) {
+            // Aquí procesarías la línea de secuencia y la almacenarías
+            // [Aquí iría tu lógica para procesar y almacenar la secuencia]
+        }
+    }
+    
+    // Cerrar el archivo
+    archivo.close();
+    
+    // Mostrar el mensaje apropiado
+    if (contador_secuencias == 0) {
+        cout << nombre_archivo << " no contiene ninguna secuencia.\n";
+    } else if (contador_secuencias == 1) {
+        cout << "1 secuencia cargada correctamente desde " << nombre_archivo << ".\n";
+    } else {
+        cout << contador_secuencias << " secuencias cargadas correctamente desde " << nombre_archivo << ".\n";
+    }
+    
+    // [Aquí podrías actualizar una variable global para saber qué archivo está cargado actualmente]
+}
     // Método que muestra información de la imagen cargada
     void info_imagen(const vector<string>&) {
         if (imagen_cargada.empty()) {
